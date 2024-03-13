@@ -1,0 +1,7 @@
+Keith's Sheet Music Receipt
+Purchase Total: $122.00
+Discount: $1786.08
+Discouned total: $107.36
+Sales Tax (5%): $5.37
+Total Amount: $112.73
+Thank you for your purchase!

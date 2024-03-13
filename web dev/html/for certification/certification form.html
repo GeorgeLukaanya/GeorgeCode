@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreeCodeCamp Survey Form</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1 id="title">FreeCodeCamp Survey Form</h1>
+  <p id="description">Thank you for taking the time to fill out this survey form!</p>
+  <form id="survey-form" action="process_form.php" method="post">
+    <label for="name">Name: <input id="name" type="text" placeholder="Enter your name" required></label>
+    <label for="email">Email: <input id="email" type="email" placeholder="Enter your email address" required></label>
+    <label for="age">Age: <input id="age" type="number" placeholder="Enter your age" max="99" min="10"></label>
+    <label for="dropdown">How did you hear about FreeCodeCamp? 
+      <select id="dropdown" name="referral_source">
+        <option value="youtube">YouTube</option>
+        <option value="website">Website</option>
+        <!-- Add more options as needed -->
+      </select>
+    </label>
+    <label>What course units would you like to take up with us?
+      <input type="checkbox" name="course" value="html"> HTML
+      <input type="checkbox" name="course" value="css"> CSS
+      <input type="checkbox" name="course" value="javascript"> JavaScript
+    </label>
+    <label for="comments">Comments:</label>
+    <textarea id="comments" name="user_comments"></textarea>
+    <input id="submit" type="submit" value="Submit">
+  </form>
+</body>
+</html

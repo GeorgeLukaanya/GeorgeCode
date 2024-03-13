@@ -1,0 +1,13 @@
+body{
+    background-color: mediumslateblue;
+    opacity: 0.4;
+    background: #ffffff url("img_tree.png") no-repeat right top;
+    background-position: right top;
+    background-repeat: ver;
+}
+h1, p{
+    color:yellow;
+}
+p{
+    margin-left:50px;
+}

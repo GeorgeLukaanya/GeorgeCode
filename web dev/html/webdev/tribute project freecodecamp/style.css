@@ -1,0 +1,49 @@
+ul.none {
+  list-style-type:none;
+}
+
+ul.square {
+  list-style-type:square;
+}
+
+#title, #end, #main, #tribute-info{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding:15px;
+  border-radius:5px;
+  background: #eee;
+}
+
+#title, #end, .square{
+  background-color: lightgray;
+}
+
+#container{
+  max-width: 60%;
+}
+
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin:30px 8px;
+  width:100%;
+}
+
+/*#image{
+  height: aurto;
+  max-width:100%;
+}
+
+img{
+  display: block;
+}*/
+
+#img-div{
+  text-align: center;
+  height: auto;
+  max-width:100%;
+  display: block;
+}

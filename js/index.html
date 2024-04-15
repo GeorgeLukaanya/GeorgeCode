@@ -1,0 +1,64 @@
+<script>
+    console.log("Hello World");
+    var number = 5; //single line comment
+    /*This is for multiple line comment*/
+    console.log(number);
+    /*Data types:
+    undefined, null, boolean, string, symbol, number, and object
+    */
+    //Variables
+    var myName = "Beau";//throughout whole program
+    let ourName = "freeCodeCamp";//only in declared scope
+    const PI = 3.14;
+    
+    var a;
+    var b = 2;
+    a = b;
+
+    //We use camelCase for variable names.
+    var sum = 10 + 10;
+    console.log(sum);
+    var product = 10*10;
+    var myVar;
+    myVar++;
+    myVar--;
+    myVar+=1;
+    var myString = "I am a \"double quoted\" string";
+    console.log(myString);
+    myString = "Firstline\n\t\\SecondLine";
+
+    console.log(myString.length);
+    console.log(myString[0]);
+    myString = "Jello World";
+    //Being immutable means you cant change individual characters at a time
+    //a madlibs game 
+    function wordBlanks(myNoun, myAdjective, myVerb, myAdverb){
+        var result = "";
+        result += "The " + myAdjective + " " + myNoun + " to the store " + myAdverb + " to the store. " + myVerb;
+    }
+    console.log(wordBlanks("dog", "big", "ran", "quickly"));
+
+    /*let name = prompt("Please enter your name:", "John Doe");
+    console.log("Hello, " + name + "!");*/
+
+    /*alert("Hello, World!");*/
+
+    /*let result = confirm("Are you sure you want to delete this item?");
+if (result === true) {
+    console.log("Item deleted.");
+} else {
+    console.log("Deletion canceled.");
+}*/
+
+let i = 0;
+while(i < 6) {
+    if(i === 3) {
+        continue;
+    }
+    i = i + 1;
+    document.write(i);
+}
+
+
+
+</script>

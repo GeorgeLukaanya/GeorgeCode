@@ -1,4 +1,3 @@
-import java.util.Scanner;
 public class Fibonacci {
     public static int fibonacci(int n) {
         // Base cases: Fibonacci of 0 and 1 are 0 and 1 respectively
@@ -14,14 +13,10 @@ public class Fibonacci {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Upto what term should the series go?: ");
-        int n = scanner.nextInt(); 
+        int n = 10; // Calculate Fibonacci sequence up to the 10th term
         System.out.println("Fibonacci sequence up to term " + n + ":");
         for (int i = 0; i < n; i++) {
-            System.out.println(fibonacci(i) + " ");
+            System.out.print(fibonacci(i) + " ");
         }
-        System.out.println();
-        scanner.close();
     }
 }

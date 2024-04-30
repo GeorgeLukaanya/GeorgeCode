@@ -1,35 +1,20 @@
-#include<iostream>
+/*  C++ Program to Addition of Two Numbers  */
 
+#include <iostream>
 using namespace std;
 
-class Base {
+int main()
+{
+    int first, second, sum;
 
-public:
+    cout << "Enter 1st integer :: ";
+    cin >> first;
+    cout << "\nEnter 2nd integer :: ";
+    cin >> second;
 
-   void f() {
+    sum = first + second;
 
-      cout<<"Base\n";
+    cout<<"\nSum of Two Numbers [ "<<first<<" + "<<second<<" ] = "<<sum<<"\n";
 
-   }
-
-};
-
-class Derived:public Base {
-
-public:
-
-   void f() {
-
-      cout<<"Derived\n";
-
-   }
-
-};
-
-int main() {
-
-   Base *p = new Derived();
-
-   p->f();
-
+    return 0;
 }

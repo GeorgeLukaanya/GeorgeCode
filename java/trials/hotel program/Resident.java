@@ -1,9 +1,10 @@
 import java.util.Scanner;
 
-public class Resident extends Guest{
-    static double roomFee;
+public class Resident extends Guest {
+    double roomFee;
     static final int municipalFee = 30;
-    public void guestDetails(double roomFee, int municipalFee){
+
+    public void guestDetails(double roomFee, int municipalFee) {
         System.out.println("Total Room Fee: $" + (numberOfDays * roomFee));
         System.out.println("Total Municipal Fee: $" + (municipalFee * numberOfDays));
     }
@@ -19,10 +20,10 @@ public class Resident extends Guest{
         System.out.println("The number of days spent: ");
         resident.numberOfDays = scanner.nextInt();
         System.out.println("The Room Fee: $");
-        roomFee = scanner.nextDouble();
+        resident.roomFee = scanner.nextDouble();
         scanner.nextLine();
         resident.guestDetails();
-        resident.guestDetails(roomFee, municipalFee);
+        resident.guestDetails(resident.roomFee, municipalFee);
         scanner.close();
     }
 

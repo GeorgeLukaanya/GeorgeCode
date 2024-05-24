@@ -1,12 +1,13 @@
 import java.util.Scanner;
 
-public class NonResident extends Guest{
+public class NonResident extends Guest {
     static int entranceFee;
-    public void guestDetails(int entranceFee){
+
+    public void guestDetails(int entranceFee) {
         System.out.println("Entrance Fee: " + entranceFee);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         NonResident nonResident = new NonResident();
         System.out.println("Enter the guest details");
@@ -21,5 +22,6 @@ public class NonResident extends Guest{
         nonResident.guestDetails();
         nonResident.guestDetails(entranceFee);
         scanner.nextLine();
+        scanner.close();
     }
 }

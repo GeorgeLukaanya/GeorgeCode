@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/ltgwgeorge/Desktop/GeorgeCode/University",
-      "program": "/home/ltgwgeorge/Desktop/GeorgeCode/University/build/Debug/outDebug",
+      "cwd": "/home/ltgwgeorge/Desktop/GeorgeCode/c++/sorting",
+      "program": "/home/ltgwgeorge/Desktop/GeorgeCode/c++/sorting/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

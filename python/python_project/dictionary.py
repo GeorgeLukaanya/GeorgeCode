@@ -11,5 +11,5 @@ def load(dictionary):
 def size():
     return len(words)
 
-def unload:
+def unload():
     return True

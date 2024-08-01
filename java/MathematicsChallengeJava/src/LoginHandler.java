@@ -1,49 +1,63 @@
-import java.io.*;
 import java.sql.*;
+import java.util.Scanner;
+import java.io.PrintWriter;
 
 public class LoginHandler {
-
-    private Connection conn;
+    // Class variables for database connection, output stream, input scanner, and representative menu
+    private Connection connection;
     private PrintWriter out;
-    private BufferedReader in;
-    private RegistrationHandler registrationHandler;
+    private Scanner scanner;
+    private RepresentativeMenu representativeMenu;
 
-    public LoginHandler(Connection conn, PrintWriter out, BufferedReader in, RegistrationHandler registrationHandler) {
-        this.conn = conn;
+    // Constructor to initialize the class variables
+    public LoginHandler(Connection connection, PrintWriter out, Scanner scanner, RepresentativeMenu representativeMenu) {
+        this.connection = connection;
         this.out = out;
-        this.in = in;
-        this.registrationHandler = registrationHandler;
+        this.scanner = scanner;
+        this.representativeMenu = representativeMenu;
     }
 
+    // Method to process the login command
     public String processLoginCommand(String command) {
-        String[] details = command.split(" ");
-        if (details.length != 3) {
-            return "Invalid number of details. Usage: Login <username> <password>";
-        }
+        String[] commandParts = command.split(" ");
 
-        String username = details[1];
-        String password = details[2];
+        // Check if the command has the correct format
+        if (commandParts.length == 3) {
+            String username = commandParts[1];
+            String password = commandParts[2];
 
-        String query = "SELECT * FROM SchoolRepresentative WHERE username = ? AND password = ?";
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return "Login successful";
-            } else {
-                return "Invalid username or password.";
+            try {
+                // Verify the login credentials
+                if (verifyRepresentativeLogin(username, password)) {
+                    out.println("Representative login successful");
+                    representativeMenu.showMenu(); // Show the menu if login is successful
+                    return "Representative login successful";
+                } else {
+                    return "Invalid username or password.";
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return "An error occurred during login.";
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Error processing login.";
+        } else {
+            return "Invalid command format. Use: Login <username> <password>";
         }
     }
 
-    public void showMenu() throws IOException {
-        RepresentativeMenu representativeMenu = new RepresentativeMenu(conn, out, in, registrationHandler);
-        representativeMenu.showMenu();
+    // Method to verify the representative login credentials
+    private boolean verifyRepresentativeLogin(String username, String password) throws SQLException {
+        String query = "SELECT * FROM `math-challengez`.schoolrepresentative WHERE username = ? AND password = ?";
+
+        // Prepare the SQL statement to prevent SQL injection
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            boolean isValid = resultSet.next(); // Check if the credentials match
+            resultSet.close();
+
+            return isValid;
+        }
     }
 }

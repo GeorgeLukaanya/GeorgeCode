@@ -1,5 +1,7 @@
 import java.io.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -10,12 +12,18 @@ public class RegistrationHandler {
     private String smtpPort;
     private String smtpUsername;
     private String smtpPassword;
+    private String filePath;
 
     public RegistrationHandler(String smtpHost, String smtpPort, String smtpUsername, String smtpPassword) {
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.smtpUsername = smtpUsername;
         this.smtpPassword = smtpPassword;
+        this.filePath = new File("participant_details.txt").getAbsolutePath(); // Initialize filePath
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 
     // Method to process the registration command
@@ -62,36 +70,69 @@ public class RegistrationHandler {
         }
     }
 
-    // Method to save participant details to a file and send a reminder email
+    // Method to save participant details to a file, send email, and return result
     private String sendEmailAndSaveDetails(String userName, String firstName, String lastName, String emailAddress, String dob, String regNum, String imageFile, String representativeEmail) {
-        String filePath = "participant_details.txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write("Participant Details:\n");
-            writer.write("Username: " + userName + "\n");
-            writer.write("First Name: " + firstName + "\n");
-            writer.write("Last Name: " + lastName + "\n");
-            writer.write("Email Address: " + emailAddress + "\n");
-            writer.write("Date of Birth: " + dob + "\n");
-            writer.write("Registration Number: " + regNum + "\n");
-            writer.write("Image File Path: " + imageFile + "\n");
-            if (representativeEmail != null) {
-                writer.write("Representative Email: " + representativeEmail + "\n");
-            } else {
-                writer.write("Representative Email: Not found\n");
-            }
-            writer.write("\n");
+        try {
+            int nextNumber = getNextParticipantNumber(); // Get the next available number
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()); // Get current date and time
+            boolean isFileEmpty = isFileEmpty(filePath); // Check if file is empty
 
-            // Send reminder email without attachment
-            sendReminderEmail(representativeEmail, userName);
-            return "Participant details saved to: " + filePath;
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+                if (isFileEmpty) {
+                    // Write header if file is empty
+                    writer.write(String.format("%-8s\t%-20s\t%-20s\t%-20s\t%-20s\t%-20s\t%-25s\t%-40s\t%-19s\n",
+                            "Number", "Username", "First Name", "Last Name", "Email", "Date of Birth", "Registration No.", "Image File", "Date and Time"));
+                }
+
+                // Write participant details in a tabular format
+                writer.write(String.format("%-8d\t%-20s\t%-20s\t%-20s\t%-20s\t%-20s\t%-25s\t%-40s\t%-19s\n",
+                        nextNumber, userName, firstName, lastName, emailAddress, dob, regNum, imageFile, dateTime));
+
+                // Send email with a reminder
+                sendEmailReminder(representativeEmail);
+                System.out.println("Email reminder sent to: " + representativeEmail);
+                return "Participant details saved to: " + filePath;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return "Error saving participant details.";
         }
     }
 
-    // Method to send a reminder email without attachment
-    private void sendReminderEmail(String recipientEmail, String userName) {
+    // Method to check if the file is empty
+    private boolean isFileEmpty(String filePath) {
+        File file = new File(filePath);
+        return file.length() == 0;
+    }
+
+    // Method to get the next available participant number
+    private int getNextParticipantNumber() {
+        int maxNumber = 0;
+        File file = new File(filePath);
+        if (file.exists() && !file.isDirectory()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.trim().isEmpty()) continue;
+                    String[] parts = line.split("\t");
+                    try {
+                        int number = Integer.parseInt(parts[0].trim());
+                        if (number > maxNumber) {
+                            maxNumber = number;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignore lines that don't start with a number
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return maxNumber + 1;
+    }
+
+    // Method to send email reminder
+    private void sendEmailReminder(String recipientEmail) {
         // Set properties
         Properties properties = new Properties();
         properties.put("mail.smtp.host", smtpHost);
@@ -112,8 +153,8 @@ public class RegistrationHandler {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("no-reply@example.com")); // Change as needed
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject("Reminder to Verify Student");
-            message.setText("Reminder to verify student " + userName);
+            message.setSubject("Reminder to verify student");
+            message.setText("Please verify the student details.");
 
             // Send message
             Transport.send(message);

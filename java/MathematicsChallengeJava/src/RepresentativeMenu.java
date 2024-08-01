@@ -1,117 +1,235 @@
 import java.io.*;
 import java.sql.*;
+import java.util.Scanner;
 
 public class RepresentativeMenu {
+    private Connection conn; // Database connection
+    private PrintWriter out; // Output stream to send responses
+    private Scanner scanner; // Input stream to read commands
+    private String filePath; // Path to the file containing participant details
 
-    private Connection conn;
-    private PrintWriter out;
-    private BufferedReader in;
-    private RegistrationHandler registrationHandler;
-
-    public RepresentativeMenu(Connection conn, PrintWriter out, BufferedReader in, RegistrationHandler registrationHandler) {
+    // Constructor to initialize the RepresentativeMenu with database connection, output stream, input stream, and file path
+    public RepresentativeMenu(Connection conn, PrintWriter out, Scanner scanner, String filePath) {
         this.conn = conn;
         this.out = out;
-        this.in = in;
-        this.registrationHandler = registrationHandler;
+        this.scanner = scanner;
+        this.filePath = filePath;
     }
 
-    public void showMenu() throws IOException {
-        while (true) {
-            out.println("Enter a command: \nviewApplicants\nconfirm yes/no <username>\nLogout");
-            String command = in.readLine();
+    // Method to display the menu and handle user commands
+    public void showMenu() {
+        try {
+            while (true) {
+                // Display available commands
+                out.println("Enter a command: \nviewApplicants\nconfirm yes/no <username>\nLogout");
+                out.flush(); // Ensure the prompt is sent to the client
 
-            if (command.equals("viewApplicants")) {
-                viewApplicants();
-            } else if (command.startsWith("confirm ")) {
-                confirmParticipant(command);
-            } else if (command.equals("Logout")) {
-                out.println("Logged out");
-                return;
-            } else {
-                out.println("Invalid command.");
-            }
-        }
-    }
+                // Read the command from the user
+                String command = scanner.nextLine();
+                System.out.println("Representative command received: " + command); // Debugging output
 
-    private void viewApplicants() {
-        String filePath = "participant_details.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.println(line);
+                // Check if the command is null or empty
+                if (command == null || command.trim().isEmpty()) {
+                    out.println("Invalid command.");
+                    out.flush();
+                    continue;
+                }
+
+                boolean exitMenu = false;
+                // Process the command
+                switch (command.split(" ")[0]) {
+                    case "viewApplicants":
+                        viewApplicants(); // Show the list of applicants
+                        break;
+                    case "confirm":
+                        confirmParticipantCommand(command); // Confirm or reject a participant
+                        break;
+                    case "Logout":
+                        out.println("Logged out");
+                        out.flush();
+                        exitMenu = true; // Exit the menu
+                        break;
+                    default:
+                        out.println("Invalid command.");
+                        out.flush();
+                }
+
+                if (exitMenu) {
+                    break; // Exit the menu loop
+                }
             }
-        } catch (FileNotFoundException e) {
-            out.println("Error: participant_details.txt file not found.");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            out.println("Error reading participant details.");
+            out.println("Error handling the menu command.");
+            out.flush();
         }
     }
 
-    private void confirmParticipant(String command) {
-        String[] details = command.split(" ");
-        if (details.length != 3) {
-            out.println("Invalid command. Usage: confirm yes/no <username>");
+    // Method to view applicants from the file
+    private void viewApplicants() {
+        File file = new File(filePath);
+        // Check if the file exists
+        if (!file.exists()) {
+            out.println("Error: participant_details.txt file not found.");
+            out.flush();
             return;
         }
 
-        String action = details[1];
-        String username = details[2];
-
-        if (action.equals("yes")) {
-            moveParticipant(username, "AcceptedParticipants");
-        } else if (action.equals("no")) {
-            moveParticipant(username, "RejectedParticipants");
-        } else {
-            out.println("Invalid action. Use yes or no.");
-        }
-    }
-
-    private void moveParticipant(String username, String tableName) {
-        String filePath = "participant_details.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            boolean found = false;
+            boolean hasData = false;
+            // Read and print each line from the file
             while ((line = reader.readLine()) != null) {
-                if (line.contains("Username: " + username)) {
-                    found = true;
-                    break;
-                }
+                out.println(line);
+                hasData = true;
             }
-            if (!found) {
-                out.println("Username not found in the details file.");
-                return;
+            if (!hasData) {
+                out.println("No participant details found in the file.");
             }
-
-            String insertQuery = "INSERT INTO " + tableName + " (username, firstname, lastname, emailAddress, date_of_birth, registration_number, image_file) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
-                pstmt.setString(1, username);
-                pstmt.setString(2, getValueFromFile(reader, "First Name: "));
-                pstmt.setString(3, getValueFromFile(reader, "Last Name: "));
-                pstmt.setString(4, getValueFromFile(reader, "Email Address: "));
-                pstmt.setString(5, getValueFromFile(reader, "Date of Birth: "));
-                pstmt.setString(6, getValueFromFile(reader, "Registration Number: "));
-                pstmt.setString(7, getValueFromFile(reader, "Image File Path: "));
-                pstmt.executeUpdate();
-                out.println("Participant details moved to " + tableName);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                out.println("Error moving participant details.");
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
             out.println("Error reading participant details.");
         }
+        out.flush();
     }
 
-    private String getValueFromFile(BufferedReader reader, String key) throws IOException {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.startsWith(key)) {
-                return line.substring(key.length());
-            }
+    // Method to handle the confirm command
+    private void confirmParticipantCommand(String command) {
+        String[] details = command.split(" ");
+        // Validate command format
+        if (details.length != 3) {
+            out.println("Invalid command. Usage: confirm yes/no <username>");
+            out.flush();
+            return;
         }
-        return "";
+
+        String action = details[1]; // Extract the action (yes/no)
+        String username = details[2]; // Extract the username
+        confirmParticipant(username, action.equals("yes")); // Confirm or reject the participant
+    }
+
+    // Method to confirm or reject a participant based on the username
+    private void confirmParticipant(String username, boolean accepted) {
+        File file = new File(filePath);
+        // Check if the file exists
+        if (!file.exists()) {
+            out.println("Error: participant_details.txt file not found.");
+            out.flush();
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            boolean found = false;
+            ParticipantDetails participantDetails = null;
+
+            // Read each line from the file to find the participant
+            while ((line = reader.readLine()) != null) {
+                // Skip header lines
+                if (line.contains("Number")) {
+                    continue;
+                }
+
+                String[] fields = line.split("\\s+");
+                // Check if the line contains enough columns
+                if (fields.length < 9) {
+                    continue;
+                }
+
+                String fileUsername = fields[1];
+                // Match the username to find the participant
+                if (fileUsername.equals(username)) {
+                    found = true;
+                    // Create a ParticipantDetails object with the parsed data
+                    participantDetails = new ParticipantDetails(
+                            fileUsername,
+                            fields[2],
+                            fields[3],
+                            fields[4],
+                            fields[5],
+                            fields[6],
+                            fields[7],
+                            fields[8]
+                    );
+                    break;
+                }
+            }
+
+            if (!found) {
+                out.println("Username not found in the details file.");
+                out.flush();
+                return;
+            }
+
+            // Prepare the query to insert participant details into the appropriate table
+            String tableName = accepted ? "acceptedparticipants" : "rejectedparticipants";
+            String insertQuery = "INSERT INTO " + tableName + " (username, schoolRegNo, email, firstName, lastName, dateOfBirth) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
+                pstmt.setString(1, participantDetails.getUsername());
+                pstmt.setString(2, participantDetails.getSchoolRegNo());
+                pstmt.setString(3, participantDetails.getEmail());
+                pstmt.setString(4, participantDetails.getFirstName());
+                pstmt.setString(5, participantDetails.getLastName());
+                pstmt.setString(6, participantDetails.getDateOfBirth());
+                pstmt.executeUpdate();
+                out.println("Participant details successfully added to " + tableName + ".");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                out.println("Error adding participant details to database: " + e.getMessage());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            out.println("Error reading participant details.");
+        }
+        out.flush();
+    }
+
+    // Inner class to hold participant details
+    private class ParticipantDetails {
+        private String username;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String dateOfBirth;
+        private String schoolRegNo;
+        private String imageFile;
+        private String dateTime;
+
+        // Constructor to initialize participant details
+        public ParticipantDetails(String username, String firstName, String lastName, String email, String dateOfBirth, String schoolRegNo, String imageFile, String dateTime) {
+            this.username = username;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            this.dateOfBirth = dateOfBirth;
+            this.schoolRegNo = schoolRegNo;
+            this.imageFile = imageFile;
+            this.dateTime = dateTime;
+        }
+
+        // Getters for participant details
+        public String getUsername() {
+            return username;
+        }
+
+        public String getSchoolRegNo() {
+            return schoolRegNo;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public String getDateOfBirth() {
+            return dateOfBirth;
+        }
     }
 }

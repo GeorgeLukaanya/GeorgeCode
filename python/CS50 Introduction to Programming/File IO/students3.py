@@ -18,11 +18,14 @@ for student in sorted(students, key = get_name, reverse = True):
     print(f"{student['name']} lives in {student['place']}")
 
 #function to return student's name
-def get_place(student):
-    return student["place"]
+#def get_place(student):
+#    return student["place"]
 
 print()
 
 #passing the get_name function into the sorted key argument in descending order
-for student in sorted(students, key = get_place, reverse = True):
+for student in sorted(students, key = lambda student : student["place"], reverse = True):
     print(f"{student['name']} lives in {student['place']}")
+
+    #lambda student : student["name"]  an anonymous function
+    #This is the equivalent of the get_place function

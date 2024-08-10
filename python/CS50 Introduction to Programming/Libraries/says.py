@@ -1,6 +1,6 @@
 import sys
-
-from saying import hello
+#importing custom library in saying.py
+from saying import goodbye
 
 if len(sys.argv) == 2:
-    hello(sys.argv[1])
+    goodbye(sys.argv[1])

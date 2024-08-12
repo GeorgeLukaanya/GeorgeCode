@@ -1,38 +1,23 @@
-#introduction to OOP
-
 class Student:
-    #instance method for initialisation
-    #self gives access to the current object that has just been created
     def __init__(self, name, house):
-        #instance variables
+        if not name:
+            raise ValueError("Missing name")
+        if house not in ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"]:
+            raise ValueError("Invalid house")
         self.name = name
         self.house = house
-
+        
+    def __str__(self):
+        return f"{self.name} from {self.house}"
 
 def main():
     student = get_student()
-    """if student[0] == 'Padma':
-        student[1] = 'Ravenclaw'"""
-    print(f"{student.name} from {student.house}")
+    print(student)
 
-'''
-#using a class
 def get_student():
-    #creating an object/instance of a class
-    student = Student()
-    student.name = input("Name: ")
-    student.house = input("House: ")
-    return student
-'''
-
-#alternative 2
-def get_student():
-    #creating an object/instance of a class
     name = input("Name: ")
     house = input("House: ")
-    #constructor call
-    student = Student(name, house)
-    return student
+    return Student(name, house)
 
 if __name__ == "__main__":
     main()

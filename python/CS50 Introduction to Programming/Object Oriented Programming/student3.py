@@ -7,7 +7,7 @@ class Student:
         self.name = name
         self.house = house
         #self.patronus = patronus
-        
+         
     def __str__(self):
         #returns an f-string
         return f"{self.name} from {self.house}"
@@ -30,8 +30,8 @@ class Student:
 def main():
     student = get_student()
     #calls to the __str__ method
-    print(student)
-    print(student.charm())
+    print(student )
+    #print(student.charm())
 
 def get_student():
     name = input("Name: ")

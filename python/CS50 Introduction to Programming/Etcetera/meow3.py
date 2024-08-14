@@ -4,7 +4,7 @@ def meow(n: int) -> str: #hinting a return value using None
     Meow n times
     
     #This is a third party convention 
-    
+
     :param n:Number of times to meow
     :type n: int
     :raise TypeError: if n is not an int

@@ -2,7 +2,7 @@ class Account:
     def __init__(self):
         self._balance = 0
 
-    @property
+    @property #This is a getter method
     def balance(self):
         return self._balance
     

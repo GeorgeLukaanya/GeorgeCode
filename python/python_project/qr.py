@@ -1,4 +1,4 @@
 import qrcode
 
-img=qrcode.make("https://www.geeksforgeeks.org/inheritance-in-python/")
+img=qrcode.make("Lukaanya George")
 img.save("qr.png", "PNG")

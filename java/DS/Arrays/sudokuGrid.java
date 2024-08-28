@@ -17,8 +17,10 @@ public class sudokuGrid {
         }
 
         // Check the sub-grid constraint
+        //This is the starting index
         int subGridRowStart = (row / 3) * 3;
         int subGridColStart = (col / 3) * 3;
+        //The '+3' ensure to check the preceeding three indices from the starting index
         for (int i = subGridRowStart; i < subGridRowStart + 3; i++) {
             for (int j = subGridColStart; j < subGridColStart + 3; j++) {
                 if (sudokuGrid[i][j] == num) {

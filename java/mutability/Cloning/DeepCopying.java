@@ -16,6 +16,8 @@ public class DeepCopying {
         obj1.i = obj.i;
         obj1.j = obj.j;
 
+        obj1.i = 8;
+
         System.out.println(obj);
         System.out.println(obj1);
     }

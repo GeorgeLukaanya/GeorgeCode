@@ -1,0 +1,226 @@
+A.Linked Lists
+<- = assignment
+(*newNode).data = newNode->data
+
+1.Insertion
+
+//Inserting after a given key value
+insertAfterKey(head, key):
+	newNode <- createNode()
+	newNode->data <- newData
+	if head == NULL:
+		head <- newNode
+		return head
+	current <- head
+	while current != NULL and current->data != key:
+		current <- current->next
+	if current != NULL:
+		Print "Key not found"
+	newNode->next <- current->next
+	current->next <- newNode
+
+//Inserting at the head
+insertAtHead(head):
+	newNode <-createNode()
+	newNode->data <- newData
+	newNode->next <- head
+	head <- newNode
+	
+//Inserting at the end
+insertAtEnd(head):
+	newNode <- createNode()
+	newNode->data <- newData
+	newNode->next <- NULL
+	if head == NULL:
+		head <- newNode
+		return head
+	current <- head
+	while current->next != NULL:
+		current <- current->next
+	current->next <- newNode
+
+2.Deletion
+
+//Deleting at the head
+deleteHead(head):
+	if head == NULL:
+		Print "Empty list"
+		return NULL
+	temp <- head
+	head <- head->next
+	Delete temp
+	return head
+	
+//Deleting at the end 
+deleteEnd(head)
+	if head == NULL:
+		Print "Empty list"
+		return NULL
+	if head->next == NULL:
+		delete head
+		return NULL
+	current <- head
+	while current->next->next != NULL:
+		current <- current->next
+	temp <- current->next
+	current->next <- NULL
+	delete temp
+	return head
+	
+//Delete at specific position
+deleteAtPosition(head, pos):
+    if head == NULL:
+        print "List is empty"
+        Return NULL
+    if pos == 1:
+        temp <- head  // Store the current head
+        head <- head->next  // Move head to the next node
+        delete temp  // Free memory of the old head
+        return head
+    current <- head
+    count <- 1
+    while current != NULL and count < pos - 1:
+        current <- current->next
+        count <- count + 1
+    if current == NULL or current->next == NULL:
+        Print "Position is out of bounds"
+        return head
+    temp <- current->next  // Store the node to be deleted
+    current->next <- current->next->next  // Skip the node to be deleted
+    delete temp  // Free memory of the deleted node
+    return head
+
+//Delete node with specific key
+deleteAtKey(head, key):
+    if head == NULL:
+        Print "List is empty"
+        Return NULL
+    if head->data == key:
+        temp <- head // Store current head
+        head <- head->next // Move head to the next node
+        delete temp // Free memory of old head
+        return head
+    current <- head
+    while current->next != NULL and current->next->data != key:
+        current <- current->next
+    if current->next == NULL:
+        print "Key not found"
+        return head
+    temp <- current->next // Store the node to be deleted
+    current->next <- current->next->next // Skip the node to be deleted
+    delete temp // Free memory of deleted node
+    return head
+
+3.Merging
+
+mergeLists(head1, head2):
+	if head1 == NULL:
+		return head2
+	if head2 == NULL:
+		return head1
+	current <- head1
+	while current->next != NULL:
+		current <- current->next
+	current->next <- head2
+	return head1
+	
+4.Reversing
+
+reverseLinkedList(head):
+    if head == NULL:
+        return NULL  // List is empty
+    previous <- NULL  // Initialize the previous node
+    current <- head  // Start with the head of the list
+    // Step 1: Traverse the list
+    while current != NULL:
+        nextNode <- current->next  // Store the next node
+        current->next <- previous  // Reverse the current node's pointer
+        previous <- current  // Move previous one step forward
+        current <- nextNode  // Move current one step forward
+    // Step 2: Update head to the new first node (previous will be the new head)
+    head <- previous
+    return head  // Return the new head of the reversed list
+
+B.Arrays
+1.Inserting
+
+//Inserting at the end
+insertEnd(array[], capacity, size, key):
+	if size == capacity:
+		print "Full array"
+		exit
+	array[size] <- key
+	size <- size + 1
+
+//Inserting at the any other position
+insertAny(array[], capacity, size, key, position):
+	if size == capacity:
+		print "Full array"
+		exit
+	i <- size - 1
+	while i >= position:
+		array[i + 1] <- array[i]
+		i <- i + 1
+	array[position] <- key
+	size <- size + 1
+
+2.Deletion
+
+deleteElement(array[], size, position):
+	if position < 0 or position > size:
+		print "Invalid position"
+		exit
+	i <- position
+	while i < size - 1:
+		array[i] <- array[i + 1]
+		i <- i + 1
+	size <- size - 1
+
+3.Traversing
+traverseArray(array[], size):
+	i <- 0
+	count <- 0
+	while i < size:
+		print array[i]
+		count <- count + 1
+		i <- i + 1
+	print count
+	
+4.Merging two arrays
+mergeArray(array1[], size1, array2[], size2):
+	merged[size1 + size2]
+	i <- 0
+	while i < size1:
+		merged[i] <- array1[i]
+		i <- i + 1
+	j <- 0
+	while j < size2:
+		merged[size1 + j] <- array[j]
+		j <- j + 1
+	return merged
+	
+5.Reversing the array
+
+swap(x, y):
+	temp <- x
+	x <- y
+	y <- temp
+	
+reverseArray(array[], left, right):
+	left <- 0
+	right <- size - 1
+	while left < right:
+		swap(array[left], array[right])
+		left <- left + 1
+		right <- right - 1
+	return array
+		
+6.Rotating the array
+rotateArray(array[], k, size):
+	if k > size:
+		k <- k % size
+	left <- 0
+	right <- size - 1
+	reverseArray(array[], left, right)
+	reverseArray(array[], left, k - 1)
+	reverseArray(array[], k, right)

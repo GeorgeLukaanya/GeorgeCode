@@ -14,9 +14,9 @@ class ShallowCopying{
 
         ShallowCopying obj1 = obj;//copying the whole reference      
         //changing values here manipulates the whole reference
-        /*
-         * obj.i = 8;
-         */
+        
+        obj.i = 8;
+         
 
         System.out.println(obj);
         System.out.println(obj1);

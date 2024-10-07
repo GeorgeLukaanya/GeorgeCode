@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
         }
         n->number = number;//putting a value in the memory chunk
         n->next = list;
-        list = n;
+        list = n;//pointing list to n
     }
     //Print whole list
     node *ptr=list;
